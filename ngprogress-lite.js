@@ -10,80 +10,21 @@
 
   angular.module('ngProgressLite', []).provider('ngProgressLite', function() {
 
-    // global configs
-    var settings = this.settings = {
-      minimum: 0.08,
-      speed: 300,
-      ease: 'linear',
-      trickleRate: 0.02,
-      trickleSpeed: 500,
-      // Temporarily disable shadow as we can no longer assume that the area above the progress bar will be clipped
-      // template: '<div class="ngProgressLite"><div class="ngProgressLiteBar"><div class="ngProgressLiteBarShadow"></div></div></div>'
-      template: '<div class="ngProgressLite"><div class="ngProgressLiteBar"></div></div>'
-    };
-
     this.$get = ['$document',
       function($document) {
         return function(_container, _settings) {
-          if (_settings) {
-            settings.minimum = _settings.minimum || settings.minimum;
-            settings.speed = _settings.speed || settings.speed;
-            settings.ease = _settings.ease || settings.ease;
-            settings.trickleRate = _settings.trickleRate || settings.trickleRate;
-            settings.trickleSpeed = _settings.trickleSpeed || settings.trickleSpeed;
-          }
+          var settings = {
+            minimum: Math.random() / 10,
+            speed: Math.random() * 500,
+            ease: 'linear',
+            trickleRate: Math.random() / 10,
+            trickleSpeed: Math.random() * Math.random() * 1000,
+            // Temporarily disable shadow as we can no longer assume that the area above the progress bar will be clipped
+            // template: '<div class="ngProgressLite"><div class="ngProgressLiteBar"><div class="ngProgressLiteBarShadow"></div></div></div>'
+            template: '<div class="ngProgressLite"><div class="ngProgressLiteBar"></div></div>'
+          };
           var container = _container || $document.find('body');
           var $progressBarEl, status, cleanForElement;
-
-          var privateMethods = {
-            render: function() {
-              if (this.isRendered()) {
-                return $progressBarEl;
-              }
-
-              container.addClass('ngProgressLite-on');
-              $progressBarEl = angular.element(settings.template);
-              container.append($progressBarEl);
-              cleanForElement = false;
-
-              return $progressBarEl;
-            },
-
-            remove: function() {
-              container.removeClass('ngProgressLite-on');
-              $progressBarEl.remove();
-              cleanForElement = true;
-            },
-
-            isRendered: function() {
-              return $progressBarEl && $progressBarEl.children().length > 0 && !cleanForElement;
-            },
-
-            trickle: function() {
-              return publicMethods.inc(Math.random() * settings.trickleRate);
-            },
-
-            clamp: function(num, min, max) {
-              if (num < min) {
-                return min;
-              }
-              if (num > max) {
-                return max;
-              }
-              return num;
-            },
-
-            toBarPercents: function(num) {
-              return num * 100;
-            },
-
-            positioning: function(num, speed, ease) {
-              return {
-                'width': this.toBarPercents(num) + '%',
-                'transition': 'all ' + speed + 'ms ' + ease
-              };
-            }
-          };
 
           var publicMethods = {
             set: function(num) {
@@ -122,6 +63,7 @@
 
               var worker = function() {
                 setTimeout(function() {
+                  console.log('using trickle speed ' + settings.trickleSpeed);
                   if (!status) {
                     return;
                   }
