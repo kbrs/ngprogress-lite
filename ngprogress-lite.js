@@ -26,6 +26,56 @@
           var container = _container || $document.find('body');
           var $progressBarEl, status, cleanForElement;
 
+          var privateMethods = {
+            render: function() {
+              if (this.isRendered()) {
+                return $progressBarEl;
+              }
+
+              container.addClass('ngProgressLite-on');
+              $progressBarEl = angular.element(settings.template);
+              container.append($progressBarEl);
+              cleanForElement = false;
+
+              return $progressBarEl;
+            },
+
+            remove: function() {
+              container.removeClass('ngProgressLite-on');
+              $progressBarEl.remove();
+              cleanForElement = true;
+            },
+
+            isRendered: function() {
+              return $progressBarEl && $progressBarEl.children().length > 0 && !cleanForElement;
+            },
+
+            trickle: function() {
+              return publicMethods.inc(Math.random() * settings.trickleRate);
+            },
+
+            clamp: function(num, min, max) {
+              if (num < min) {
+                return min;
+              }
+              if (num > max) {
+                return max;
+              }
+              return num;
+            },
+
+            toBarPercents: function(num) {
+              return num * 100;
+            },
+
+            positioning: function(num, speed, ease) {
+              return {
+                'width': this.toBarPercents(num) + '%',
+                'transition': 'all ' + speed + 'ms ' + ease
+              };
+            }
+          };
+
           var publicMethods = {
             set: function(num) {
               var $progress = privateMethods.render();
@@ -63,7 +113,6 @@
 
               var worker = function() {
                 setTimeout(function() {
-                  console.log('using trickle speed ' + settings.trickleSpeed);
                   if (!status) {
                     return;
                   }
