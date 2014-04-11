@@ -16,9 +16,9 @@
           var settings = {
             minimum: _.random(0.01, 0.09),
             speed: _.random(100, 300),
-            ease: 'linear',
-            trickleRate: _.random(0.01, 0.05),
-            trickleSpeed: _.random(100, 500),
+            ease: 'ease',
+            trickleRate: _.random(0.05, 0.09),
+            trickleSpeed: _.random(100, 300),
             // Temporarily disable shadow as we can no longer assume that the area above the progress bar will be clipped
             // template: '<div class="ngProgressLite"><div class="ngProgressLiteBar"><div class="ngProgressLiteBarShadow"></div></div></div>'
             template: '<div class="ngProgressLite"><div class="ngProgressLiteBar"></div></div>'
@@ -51,7 +51,9 @@
             },
 
             trickle: function() {
-              return publicMethods.inc(Math.random() * settings.trickleRate);
+              var remaining = 100 - (status * 100);
+              var inc = settings.trickleRate * Math.pow(1 - Math.sqrt(remaining), 2);
+              return publicMethods.inc(inc/100);
             },
 
             clamp: function(num, min, max) {
