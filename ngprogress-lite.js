@@ -5,7 +5,7 @@
  * (c) 2013 MIT License
  */
 
-(function(window, angular, undefined) {
+(function(window, angular, _) {
   'use strict';
 
   angular.module('ngProgressLite', []).provider('ngProgressLite', function() {
@@ -14,11 +14,11 @@
       function($document) {
         return function(_container, _settings) {
           var settings = {
-            minimum: Math.random() / 10,
-            speed: Math.random() * 500,
+            minimum: _.random(0.01, 0.09),
+            speed: _.random(100, 300),
             ease: 'linear',
-            trickleRate: Math.random() / 10,
-            trickleSpeed: Math.random() * Math.random() * 1000,
+            trickleRate: _.random(0.01, 0.05),
+            trickleSpeed: _.random(100, 500),
             // Temporarily disable shadow as we can no longer assume that the area above the progress bar will be clipped
             // template: '<div class="ngProgressLite"><div class="ngProgressLiteBar"><div class="ngProgressLiteBarShadow"></div></div></div>'
             template: '<div class="ngProgressLite"><div class="ngProgressLiteBar"></div></div>'
@@ -153,4 +153,4 @@
     ];
   });
 
-})(window, window.angular);
+})(window, window.angular, _);
